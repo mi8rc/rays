@@ -1,0 +1,107 @@
+# Makefile for MSYS2 compilation on Windows
+CC = gcc
+CFLAGS = -Wall -ansi -pedantic -O2 -ffast-math
+LDFLAGS = -lm -ljpeg
+
+# MSYS2 paths
+MSYS2_PREFIX = /mingw64
+INCLUDES = -I$(MSYS2_PREFIX)/include
+LIBS = -L$(MSYS2_PREFIX)/lib
+
+# OpenGL libraries for MSYS2
+OPENGL_LIBS = -lopengl32 -lglu32 -lfreeglut
+
+# Main targets
+all: rays32.exe rays64.exe rays96.exe utilities
+
+# Main raytracer executables
+rays32.exe: rays.c rayslib.c rayslib.h
+	$(CC) $(CFLAGS) -DREAL=__REAL_32bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math -D_REENTRANT $(INCLUDES) -o rays32.exe rays.c rayslib.c $(LIBS) $(LDFLAGS) $(OPENGL_LIBS)
+	strip -s rays32.exe
+
+rays64.exe: rays.c rayslib.c rayslib.h
+	$(CC) $(CFLAGS) -DREAL=__REAL_64bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math -D_REENTRANT $(INCLUDES) -o rays64.exe rays.c rayslib.c $(LIBS) $(LDFLAGS) $(OPENGL_LIBS)
+	strip -s rays64.exe
+
+rays96.exe: rays.c rayslib.c rayslib.h
+	$(CC) $(CFLAGS) -DREAL=__REAL_80bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math -D_REENTRANT $(INCLUDES) -o rays96.exe rays.c rayslib.c $(LIBS) $(LDFLAGS) $(OPENGL_LIBS)
+	strip -s rays96.exe
+
+# Utility programs
+utilities: torrusgen.exe iges2dat.exe btreeconv.exe convert.exe rtriangle.exe cube.exe ball.exe 60faces.exe table.exe uli2dat.exe cone.exe cylinder.exe tex.exe nurbs.exe md22dat.exe nurbs2dat.exe randnurb.exe randnurbfull.exe snum.exe getbmp.exe terminal.exe sizes.exe
+
+torrusgen.exe: torrusgen.c
+	$(CC) $(CFLAGS) -o torrusgen.exe torrusgen.c $(LDFLAGS)
+
+iges2dat.exe: iges2dat.c
+	$(CC) $(CFLAGS) -o iges2dat.exe iges2dat.c
+
+btreeconv.exe: btreeconv.c
+	$(CC) $(CFLAGS) -o btreeconv.exe btreeconv.c
+
+convert.exe: convert.c
+	$(CC) $(CFLAGS) -o convert.exe convert.c
+
+rtriangle.exe: rtriangle.c
+	$(CC) $(CFLAGS) -o rtriangle.exe rtriangle.c
+
+cube.exe: cube.c
+	$(CC) $(CFLAGS) -o cube.exe cube.c
+
+ball.exe: ball.c
+	$(CC) $(CFLAGS) -o ball.exe ball.c $(LDFLAGS)
+
+60faces.exe: 60faces.c
+	$(CC) $(CFLAGS) -o 60faces.exe 60faces.c
+
+table.exe: table.c
+	$(CC) $(CFLAGS) -o table.exe table.c
+
+uli2dat.exe: uli2dat.c
+	$(CC) $(CFLAGS) -o uli2dat.exe uli2dat.c
+
+cone.exe: cone.c
+	$(CC) $(CFLAGS) -o cone.exe cone.c $(LDFLAGS)
+
+cylinder.exe: cylinder.c
+	$(CC) $(CFLAGS) -o cylinder.exe cylinder.c $(LDFLAGS)
+
+tex.exe: tex.c
+	$(CC) $(CFLAGS) -o tex.exe tex.c $(LDFLAGS)
+
+nurbs.exe: nurbs.c libfparser.c libfparser.h
+	$(CC) $(CFLAGS) $(INCLUDES) -o nurbs.exe nurbs.c libfparser.c $(LIBS) $(OPENGL_LIBS)
+
+md22dat.exe: md22dat.c
+	$(CC) $(CFLAGS) -D_REENTRANT $(INCLUDES) -o md22dat.exe md22dat.c $(LIBS) $(OPENGL_LIBS)
+
+nurbs2dat.exe: nurbs2dat.c
+	$(CC) $(CFLAGS) -o nurbs2dat.exe nurbs2dat.c
+
+randnurb.exe: randnurb.c
+	$(CC) $(CFLAGS) -o randnurb.exe randnurb.c
+
+randnurbfull.exe: randnurbfull.c
+	$(CC) $(CFLAGS) -o randnurbfull.exe randnurbfull.c
+
+snum.exe: snum.c
+	$(CC) $(CFLAGS) -o snum.exe snum.c
+
+getbmp.exe: getbmp.c
+	$(CC) $(CFLAGS) -o getbmp.exe getbmp.c
+
+terminal.exe: terminal.c
+	$(CC) $(CFLAGS) -o terminal.exe terminal.c
+
+sizes.exe: sizes.c
+	$(CC) $(CFLAGS) -o sizes.exe sizes.c
+
+# Clean target
+clean:
+	rm -f *.exe *.o
+
+# Install dependencies (run this first)
+install-deps:
+	pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-gcc mingw-w64-x86_64-make mingw-w64-x86_64-freeglut mingw-w64-x86_64-libjpeg-turbo
+
+.PHONY: all utilities clean install-deps
