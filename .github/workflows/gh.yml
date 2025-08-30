@@ -1,38 +1,92 @@
-name: Build and Test
+name: build-cygwin-nurbs
 
 on:
   push:
-    branches: [ main, master, develop ]
-  workflow_dispatch:
+  pull_request:
 
 jobs:
-  build:
+  cygwin-build:
     runs-on: windows-latest
-    
+    strategy:
+      fail-fast: false
+      matrix:
+        backend: [GLUT, GLFW]   # Build once with GLUT, once with GLFW
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      
+      # Install Cygwin and core packages
+      - name: Install Cygwin + deps
+        uses: cygwin/cygwin-install-action@master
+        with:
+          # Base toolchain + cmake + pkg-config + git
+          packages: >-
+            gcc-g++
+            make
+            cmake
+            pkg-config
+            git
+            # OpenGL + GLU + GLUT headers/libs for Cygwin
+            libGL-devel
+            libGLU-devel
+            libglut-devel
 
-      
+      # (Optional) Build & install GLFW 3 inside Cygwin when matrix.backend == GLFW
+      - name: Build GLFW3 from source (Cygwin)
+        if: matrix.backend == 'GLFW'
+        shell: bash {0}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/glfw && cd /tmp/glfw
+          git clone --depth=1 https://github.com/glfw/glfw.git
+          cd glfw
+          mkdir build && cd build
+          cmake -G "Unix Makefiles" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DGLFW_BUILD_DOCS=OFF \
+            -DGLFW_BUILD_EXAMPLES=OFF \
+            -DGLFW_BUILD_TESTS=OFF \
+            ..
+          make -j"$(nproc)"
+          make install  # installs into /usr/local by default
 
-        
-  
-        
+      # Configure your project
+      # Assumes your top-level CMakeLists.txt supports toggles:
+      #   -DUSE_GLUT=ON/OFF and -DUSE_GLFW=ON/OFF
+      # and outputs binaries into build/bin (adjust as needed).
+      - name: Configure (CMake)
+        shell: bash {0}
 
-        
+        run: |
+          set -euo pipefail
+          mkdir -p build && cd build
+          if [ "${{ matrix.backend }}" = "GLFW" ]; then
+            cmake -G "Unix Makefiles" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DUSE_GLFW=ON \
+              -DUSE_GLUT=OFF \
+              ..
+          else
+            cmake -G "Unix Makefiles" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DUSE_GLFW=OFF \
+              -DUSE_GLUT=ON \
+              ..
+          fi
 
-        
-   
-      
-    # C/C++ projects with Makefile
-    - name: Build C/C++ project (Makefile)
-      run: |
-       cd raytrace
-       mkdir build
-       make ..
-      
-  
+      - name: Build
+        shell: bash {0}
+        run: |
+          set -euo pipefail
+          cd raytrace
+          make -j"$(nproc)"
 
+      - name: Package artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.backend }}-cygwin-build
+          path: .
+          if-no-files-found: warn
