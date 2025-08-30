@@ -37,7 +37,8 @@ jobs:
 
       - name: Build
         shell: bash {0}
-        run: |
+        run: 
+          cd ${{ github.workspace }}
           cd raytrace
           make -j"$(nproc)"
 
