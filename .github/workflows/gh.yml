@@ -1,51 +1,46 @@
-name: build-cygwin-nurbs
-
+name: build-msys2-clang64-nurbs
 on:
   push:
   pull_request:
-
 jobs:
-  cygwin-build:
+  msys2-clang64-build:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
     strategy:
       fail-fast: false
-
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      # Install Cygwin and core packages
-      - name: Install Cygwin + deps
-        uses: cygwin/cygwin-install-action@master
+      
+      # Install MSYS2 and clang64 packages
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
         with:
-          # Base toolchain + cmake + pkg-config + git
-          packages: >-
-            gcc-g++
+          msystem: clang64
+          update: true
+          install: >-
             make
-            cmake
-            pkg-config
+            mingw-w64-clang-x86_64-clang
+            mingw-w64-clang-x86_64-clang++
+            mingw-w64-clang-x86_64-make
+            mingw-w64-clang-x86_64-cmake
+            mingw-w64-clang-x86_64-pkg-config
             git
-            # OpenGL + GLU + GLUT headers/libs for Cygwin
-            libGL-devel
-            libGLU-devel
-            libglut-devel
-
+            mingw-w64-clang-x86_64-mesa
+            mingw-w64-clang-x86_64-freeglut
+            mingw-w64-clang-x86_64-glew
     
-     
-
-
       - name: Build
-        shell: bash {0}
         run: |
-          cd ${{ github.workspace }}
           cd raytrace
-          make -j"$(nproc)"
-
+          make 
+          
       - name: Package artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.backend }}-cygwin-build
+          name: clang64-msys2-build
           path: .
           if-no-files-found: warn
