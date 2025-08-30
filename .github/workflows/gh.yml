@@ -1,9 +1,9 @@
-name: build-msys2-clang64-nurbs
+name: build-msys2-ucrt64-nurbs
 on:
   push:
   pull_request:
 jobs:
-  msys2-clang64-build:
+  msys2-ucrt64-build:
     runs-on: windows-latest
     defaults:
       run:
@@ -14,22 +14,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      # Install MSYS2 and clang64 packages
+      # Install MSYS2 and ucrt64 packages
       - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: clang64
+          msystem: ucrt64
           update: true
           install: >-
             make
-            mingw-w64-clang-x86_64-clang
-            mingw-w64-clang-x86_64-make
-            mingw-w64-clang-x86_64-cmake
-            mingw-w64-clang-x86_64-pkg-config
+            mingw-w64-ucrt-x86_64-glfw
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-make
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-pkg-config
             git
-            mingw-w64-clang-x86_64-mesa
-            mingw-w64-clang-x86_64-freeglut
-            mingw-w64-clang-x86_64-glew
+            mingw-w64-ucrt-x86_64-mesa
+            mingw-w64-ucrt-x86_64-freeglut
+            mingw-w64-ucrt-x86_64-glew
     
       - name: Build
         run: |
@@ -40,6 +41,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: clang64-msys2-build
+          name: ucrt64-msys2-build
           path: .
           if-no-files-found: warn
