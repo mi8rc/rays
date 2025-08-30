@@ -31,10 +31,8 @@ jobs:
     - name: Build C/C++ project (Makefile)
       run: |
        cd raytrace
-       make Makefile.win32
+       mkdir build
+       make ..
       
   
-      
-    - name: Test .NET project
-      if: hashFiles('*.csproj') != '' || hashFiles('*.sln') != ''
-      run: dotnet test
+
