@@ -30,6 +30,7 @@ jobs:
             mingw-w64-ucrt-x86_64-libjpeg-turbo
             mingw-w64-ucrt-x86_64-pkg-config
             git
+            mingw-w64-ucrt-x86_64-openssl
             mingw-w64-ucrt-x86_64-mesa
             mingw-w64-ucrt-x86_64-freeglut
             mingw-w64-ucrt-x86_64-glew
