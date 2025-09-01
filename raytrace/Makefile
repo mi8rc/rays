@@ -3,29 +3,29 @@ all: unix # windows
 unix: rays.debug rays96.debug rays32.debug rays32.fast rays64.fast rays96.fast rays.small torrusgen nurbs ball cube table convert wrapper 60faces rtriangle uli2dat cone sizes cylinder md22dat nurbs2dat randnurb randnurbfull snum getbmp tex terminal  iges2dat btreeconv
 windows: cyg_rays.exe cyg_torrusgen.exe cyg_ball.exe cyg_cube.exe cyg_table.exe cyg_convert.exe cyg_60faces.exe cyg_wrapper.exe cyg_rtriangle.exe cyg_uli2dat.exe cyg_cone.exe cyg_cylinder.exe cyg_tex.exe cyg_nurbs2dat.exe cyg_randnurb.exe cyg_randnurbfull.exe cyg_snum.exe cyg_getbmp.exe cyg_terminal.exe cyg_sizes.exe cyg_md22dat.exe cyg_nurbs.exe cyg_iges2dat.exe cyg_btreeconv.exe
 rays.efence: rays.c rayslib.c rayslib.h
-	$(CC) -ffast-math  -Werror -D_REENTRANT -I/usr/local/include -L/usr/local/lib -DDEBUG -DNOGL -DNOINET -Wall -ansi -pedantic -g3 -o rays.efence rays.c rayslib.c /usr/lib/libefence.a  -ljpeg
+	$(CC) -ffast-math   -D_REENTRANT -I/usr/local/include -L/usr/local/lib -DDEBUG -DNOGL -DNOINET -Wall -ansi -pedantic -g3 -o rays.efence rays.c rayslib.c /usr/lib/libefence.a  -ljpeg
 rays32.debug: rays.c rayslib.c rayslib.h
-	$(CC) -DREAL=__REAL_32bit -ffast-math  -Werror -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -DDEBUG -Wall -ansi -pedantic -g3 -o rays32.debug rays.c rayslib.c -lglut -lm -ljpeg
+	$(CC) -DREAL=__REAL_32bit -ffast-math   -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -DDEBUG -Wall -ansi -pedantic -g3 -o rays32.debug rays.c rayslib.c -lglut -lm -ljpeg
 rays.debug: rays.c rayslib.c rayslib.h
-	$(CC) -DREAL=__REAL_64bit -ffast-math  -Werror -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -DDEBUG -Wall -ansi -pedantic -g3 -o rays64.debug rays.c rayslib.c -lglut -lm -ljpeg
+	$(CC) -DREAL=__REAL_64bit -ffast-math   -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -DDEBUG -Wall -ansi -pedantic -g3 -o rays64.debug rays.c rayslib.c -lglut -lm -ljpeg
 	ln -s rays64.debug rays.debug
 rays96.debug: rays.c rayslib.c rayslib.h
-	$(CC) -DREAL=__REAL_80bit -ffast-math  -Werror -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -DDEBUG -Wall -ansi -pedantic -g3 -o rays96.debug rays.c rayslib.c -lglut -lm -ljpeg
+	$(CC) -DREAL=__REAL_80bit -ffast-math   -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -DDEBUG -Wall -ansi -pedantic -g3 -o rays96.debug rays.c rayslib.c -lglut -lm -ljpeg
 rays.small: rays.c rayslib.c rayslib.h
-	$(CC) -O3 -ffast-math -Werror -DNOTHREADS -DNOINET -DNOJPEG -DNOGL -DNOSIGNALS -Wall -ansi -pedantic -g -o rays.small rays.c rayslib.c -lc -lm
+	$(CC) -O3 -ffast-math  -DNOTHREADS -DNOINET -DNOJPEG -DNOGL -DNOSIGNALS -Wall -ansi -pedantic -g -o rays.small rays.c rayslib.c -lc -lm
 	strip -s rays.small
 rays.static: rays.c rayslib.c rayslib.h
-	$(CC) -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math -I/usr/local/include -L/usr/local/lib -pthread -O4 -ffast-math -Werror -static -DNOGL -Wall -ansi -pedantic -o rays.static rays.c rayslib.c  -ljpeg
+	$(CC) -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math -I/usr/local/include -L/usr/local/lib -pthread -O4 -ffast-math  -static -DNOGL -Wall -ansi -pedantic -o rays.static rays.c rayslib.c  -ljpeg
 	strip -s rays.static
 rays32.fast: rays.c rayslib.c rayslib.h
-	$(CC) -DREAL=__REAL_32bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math -Werror -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -Wall -ansi -pedantic -O4 -o rays32.fast rays.c rayslib.c -lglut -lm -ljpeg
+	$(CC) -DREAL=__REAL_32bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math  -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -Wall -ansi -pedantic -O4 -o rays32.fast rays.c rayslib.c -lglut -lm -ljpeg
 	strip -s rays32.fast
 rays64.fast: rays.c rayslib.c rayslib.h
-	$(CC) -DREAL=__REAL_64bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math -Werror -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -Wall -ansi -pedantic -O4 -o rays64.fast rays.c rayslib.c -lglut -lm -ljpeg
+	$(CC) -DREAL=__REAL_64bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math  -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -Wall -ansi -pedantic -O4 -o rays64.fast rays.c rayslib.c -lglut -lm -ljpeg
 	strip -s rays64.fast
 	ln -s rays64.fast rays.fast
 rays96.fast: rays.c rayslib.c rayslib.h
-	$(CC) -DREAL=__REAL_80bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math -Werror -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -Wall -ansi -pedantic -O4 -o rays96.fast rays.c rayslib.c -lglut -lm -ljpeg
+	$(CC) -DREAL=__REAL_80bit -funroll-all-loops -fomit-frame-pointer -fexpensive-optimizations -ffast-math  -D_REENTRANT -pthread -I/usr/X11R6/include -L/usr/X11R6/lib -I/usr/local/include -L/usr/local/lib -Wall -ansi -pedantic -O4 -o rays96.fast rays.c rayslib.c -lglut -lm -ljpeg
 	strip -s rays96.fast
 cyg_rays.exe: rays.c rayslib.c rayslib.h
 	gcc -D_REENTRANT -ffast-math -march=pentiumpro -O3 -Wall -ansi -pedantic -O3 -o cyg_rays.exe rays.c rayslib.c -lopengl32 -lglut32 -lglu32 -ljpeg -lc 
