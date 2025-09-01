@@ -3,17 +3,17 @@ all: windows
 
 windows: cyg_rays.exe cyg_torrusgen.exe cyg_ball.exe cyg_cube.exe cyg_table.exe cyg_convert.exe cyg_60faces.exe cyg_wrapper.exe cyg_rtriangle.exe cyg_uli2dat.exe cyg_cone.exe cyg_cylinder.exe cyg_tex.exe cyg_getbmp.exe cyg_terminal.exe cyg_md22dat.exe cyg_sizes.exe cyg_nurbs.exe cyg_randnurb.exe cyg_randnurbfull.exe cyg_snum.exe cyg_nurbs2dat.exe
 
-# Targets needing OpenGL
+# Targets needing OpenGL (link to freeglut, not glut32)
 cyg_rays.exe: rays.c rayslib.c rayslib.h
-	$(CC) -D_REENTRANT -ffast-math -O3 -Wall -ansi -pedantic -o cyg_rays.exe rays.c rayslib.c -lopengl32 -lglut32 -lglu32 -ljpeg -lc
+	$(CC) -D_REENTRANT -ffast-math -O3 -Wall -ansi -pedantic -o cyg_rays.exe rays.c rayslib.c -lopengl32 -lfreeglut -lglu32 -ljpeg -lc
 	strip -s cyg_rays.exe
 
 cyg_md22dat.exe: md22dat.c
-	$(CC) -O3 -Wall -ansi -pedantic -o cyg_md22dat.exe md22dat.c -lopengl32 -lglut32 -lglu32
+	$(CC) -O3 -Wall -ansi -pedantic -o cyg_md22dat.exe md22dat.c -lopengl32 -lfreeglut -lglu32
 	strip -s cyg_md22dat.exe
 
 cyg_nurbs.exe: nurbs.c libfparser.c libfparser.h
-	$(CC) -O3 -Wall -ansi -pedantic -o cyg_nurbs.exe nurbs.c libfparser.c -lopengl32 -lglut32 -lglu32
+	$(CC) -O3 -Wall -ansi -pedantic -o cyg_nurbs.exe nurbs.c libfparser.c -lopengl32 -lfreeglut -lglu32
 	strip -s cyg_nurbs.exe
 
 # All others (no OpenGL)
