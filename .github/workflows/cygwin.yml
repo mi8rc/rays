@@ -36,7 +36,7 @@ jobs:
         export PATH=/usr/bin:$PATH
         make clean || true
         make 
-        cygcheck ./*.exe | grep -i "\.dll" | sort -u | xargs -I{} cp "$(cygpath -w "{}")" .
+        for dll in $(cygcheck ./*.exe | grep -i "cygwin.*\.dll\|cyg.*\.dll" | sort -u); do cp "$dll" . 2>/dev/null; done
         
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
