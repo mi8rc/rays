@@ -1,6 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 void ball_gen(int s_idx, 
 double t_r, double t_g, double t_b, double s_r, double s_g, double s_b, double c_r, double c_g, double c_b, int t_id, double tr_r, double tr_g, double tr_b, double s_fac,
 double x_x, double y_y, double z_z, double r_x, double r_y, double r_z, double d_x, double d_y, double d_z, int inv_n, int faces, int lt, int pa, int pb)
